@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Student>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+<div class="row">
+    <p>
+        <a href="@Url.Action("Create", "Student")" id="btnCreate" class="btn btn-primary">Add Student Info</a>
+    </p>
+    <h4>Student List</h4>
+    @foreach (var item in Model)
+    {
+        <div class="card mb-2">
+            <div class="card-header d-flex justify-content-between">
+                <img src="~/Images/@item.ImageUrl" width="50" height="50" class="rounded">
+                <label class="m-2"><b>Name:</b> @Html.DisplayFor(m => item.StudentName)</label>
+                <br />
+                <label class="m-2"><b>Mobile:</b> @Html.DisplayFor(m => item.Mobile)</label><br>
+                <label class="m-2"><b>Date of Birth:</b> @item.Dob.ToShortDateString()</label><br>
+                <label class="m-2"><b>IsEnrolled?:</b> @Html.DisplayFor(m => item.Enroll)</label><br>
+                <label class="m-2"><b>Course Name:</b> @Html.DisplayFor(m => item.Course.CourseName)</label>
+            </div>
+            <div>
+                <a href="@Url.Action("Edit", "Student", new { id = item.StudentId })" class="btn btn-secondary">Edit Student Info</a>|
+                <a href="@Url.Action("Delete", "Student", new { id = item.StudentId })" class="btn btn-danger">Delete Student Info</a>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_IndexModuleTable", item)
+            </div>
+        </div>
+    }
+</div>

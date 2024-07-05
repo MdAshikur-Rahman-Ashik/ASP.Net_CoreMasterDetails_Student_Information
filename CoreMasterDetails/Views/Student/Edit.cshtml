@@ -1,0 +1,162 @@
+﻿@model StudentViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<hr />
+<div class="card">
+    <div class="card-header">
+        <h4 style="text-align:center">Update Student Info</h4>
+    </div>
+    <form id="editForm" asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-6">
+                @Html.HiddenFor(x => x.StudentId)
+                <div class="form-group">
+                    <label asp-for="StudentName" class="control-label"></label>
+                    <input asp-for="StudentName" class="form-control" />
+                    <span asp-validation-for="StudentName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Dob" class="control-label"></label>
+                    <input asp-for="Dob" class="form-control" />
+                    <span asp-validation-for="Dob" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MobileNo" class="control-label"></label>
+                    <input asp-for="MobileNo" class="form-control" />
+                    <span asp-validation-for="MobileNo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IsEnrolled" class="control-label"></label>
+                    <input type="checkbox" asp-for="IsEnrolled" />
+                    <span asp-validation-for="IsEnrolled" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Course</label>
+                    <select class="form-control" asp-for="CourseId" asp-items="@(new SelectList(Model.Courses, "CourseId", "CourseName"))"></select>
+                    <span asp-validation-for="CourseId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <img id="PreviewPhoto" src="~/images/@Model.ImageUrl" width="125" height="125" style="border:1px;margin-top:20px;" />
+                    </div>
+                    <label asp-for="ProfileFile" class="control-label"></label>
+                    <div class="customFile">
+                        <input asp-for="ProfileFile" type="file" class="custom-file-input" id="customFile" onchange="document.getElementById('PreviewPhoto').src= window.URL.createObjectURL(this.files[0])" />
+                        <label class="custom-file-label invisible" for="customFile"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="col-md-12">
+                    <h5 style="text-align:center">Edit Modules</h5>
+                    <div id="modulesTableContainer">
+                        @Html.Partial("_ModulesTable", Model.Modules)
+                    </div>
+                    <div class="form-group" style="text-align: center;">
+                        <button type="button" class="btn btn-primary add-module-button" onclick="AddModule()">Add Module</button>
+                    </div>
+                    <input type="hidden" id="hdnLastIndex" value="@Model.Modules.Count" />
+                </div>
+            </div>
+            <div class="col-6-group text-right p-2">
+                <a asp-action="Index" class="btn btn-secondary">&nbsp;Back to List&nbsp;</a>
+                <input type="submit" value="Update Student Info" class="btn btn-primary" />
+            </div>
+        </div>
+    </form>
+</div>
+<script src="~/jquery/jquery.min.js"></script>
+<script>
+    $(".custom-file-input").on("change", function () {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        document.getElementById('PreviewPhoto').src = window.URL.createObjectURL(this.files[0]);
+    });
+
+    function DeleteItem(btn) {
+        $(btn).closest('tr').remove();
+
+        UpdateModuleIndices();
+    }
+
+
+    function AddModule() {
+        var lastRowIndex = parseInt($("#hdnLastIndex").val());
+        var newRow =
+            '<tr>' +
+            '<td><input type="text" class="form-control" name="Modules[' + lastRowIndex + '].ModuleName" /></td>' +
+            '<td><input type="number" class="form-control" name="Modules[' + lastRowIndex + '].Duration" /></td>';
+        if (lastRowIndex > 0) {
+            newRow += '<td><button type="button" class="btn btn-danger" onclick="DeleteItem(this)">Remove</button></td>';
+        } else {
+            newRow += '<td></td>';
+        }
+
+        newRow += '</tr>';
+
+        $("#ExpTable tbody").append(newRow);
+        $("#hdnLastIndex").val(lastRowIndex + 1);
+
+        if (lastRowIndex === 0) {
+            $(".add-module-button").hide();
+        }
+
+        UpdateModuleIndices();
+
+    }
+
+
+    // function AddModule() {
+    //     var lastRowIndex = parseInt($("#hdnLastIndex").val());
+    //     var newRow =
+    //         '<tr>' +
+    //         '<td><input type="text" class="form-control" name="Modules[' + lastRowIndex + '].ModuleName" /></td>' +
+    //         '<td><input type="number" class="form-control" name="Modules[' + lastRowIndex + '].Duration" /></td>' +
+    //         '<td><button type="button" class="btn btn-danger" onclick="DeleteItem(this)">Remove</button></td>' +
+    //         '</tr>';
+
+    //     $("#ExpTable tbody").append(newRow);
+    //     $("#hdnLastIndex").val(lastRowIndex + 1);
+
+    //     UpdateModuleIndices();
+    // }
+
+    function UpdateModuleIndices() {
+        $("#ExpTable tbody tr").each(function (index, tr) {
+            $(tr).find('input[name^="Modules["]').each(function () {
+                var oldName = $(this).attr('name');
+                var newName = oldName.replace(/\d+/, index);
+                $(this).attr('name', newName);
+            });
+        });
+    }
+
+    // $("#editForm").submit(function (e) {
+    //     e.preventDefault(); 
+
+    //     var formData = new FormData(this);
+
+    $("#submitForm").click(function () {
+        var formData = new FormData(document.getElementById("editForm"));
+
+        $.ajax({
+            type: "POST",
+            url: "/Student/Edit",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+              
+                alert("Edited");
+                window.location.href = '/Student/Index'; 
+            },
+            error: function (error) {
+             
+                alert("error occurred");
+            }
+        });
+    });
+</script>

@@ -1,0 +1,33 @@
+﻿ @model List<Module>
+
+<table id="ExpTable" class="table table-striped table-sm">
+    <thead>
+        <tr>
+            <th>Module Name</th>
+            <th>Module Duration</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <tr>
+                <td>
+                    <input type="text" class="form-control" name="Modules[@i].ModuleName" value="@Model[i].ModuleName" />
+                </td>
+                <td>
+                    <input type="number" class="form-control" name="Modules[@i].Duration" value="@Model[i].Duration" />
+                </td>
+                <td>
+                    @if (i > 0)
+                    {
+                        <button type="button" class="btn btn-danger" onclick="DeleteItem(this)">Remove</button>
+                    }
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<input type="hidden" id="hdnLastIndex" value="@Model.Count" />

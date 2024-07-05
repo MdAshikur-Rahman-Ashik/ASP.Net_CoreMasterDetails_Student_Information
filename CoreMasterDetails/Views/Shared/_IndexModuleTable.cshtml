@@ -1,0 +1,19 @@
+﻿@model Student
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Module Name</th>
+            <th>Module Duration</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var exp in Model.Modules)
+        {
+            <tr>
+                <td>@Html.DisplayFor(e => exp.ModuleName)</td>
+                <td>@Html.DisplayFor(e => exp.Duration)</td>
+            </tr>
+        }
+    </tbody>
+</table>
