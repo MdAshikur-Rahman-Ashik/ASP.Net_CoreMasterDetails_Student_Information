@@ -56,7 +56,15 @@
   dotnet ef database update
   </code></pre>
 </ol>
-
+<h3>📦 NuGet Packages</h3>
+<p>The following packages need to be installed via NuGet:</p>
+<ul>
+  <li><code>Microsoft.EntityFrameworkCore</code> (Version: 8.0.8)</li>
+  <li><code>Microsoft.EntityFrameworkCore.SqlServer</code> (Version: 8.0.8)</li>
+  <li><code>Microsoft.EntityFrameworkCore.Tools</code> (Version: 8.0.8)</li>
+ 
+ 
+</ul>
 <h2 id="configuration">🔧 Configuration</h2>
 <p>The following files and folders are key to the configuration of the application:</p>
 <ul>
